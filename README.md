@@ -412,29 +412,7 @@ Verify that:
 
 ---
 
-## 🖼️ Screenshots
 
-Add actual screenshots of the working application to this section.
-
-### Landing Page
-
-![FarmLink Landing Page](docs/images/landing-page.png)
-
-### Farmer Dashboard
-
-![FarmLink Farmer Dashboard](docs/images/farmer-dashboard.png)
-
-### Offer Comparison
-
-![FarmLink Offer Comparison](docs/images/offer-comparison.png)
-
-### Make Offer Page
-
-![FarmLink Make Offer Page](docs/images/make-offer.png)
-
-> Ensure the screenshots are stored in the `docs/images/` folder before publishing these image links. Replace the filenames if your actual screenshot names are different.
-
----
 
 ## 🛠️ Technology Stack
 
