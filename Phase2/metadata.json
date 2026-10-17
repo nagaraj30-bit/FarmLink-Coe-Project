@@ -1,0 +1,6 @@
+{
+  "name": "FarmLink — Agricultural Marketplace & Decision Support",
+  "description": "Decision-support marketplace for farmers and produce buyers to compare offers by estimated take-home net return and manage selling deadlines.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
