@@ -11,7 +11,6 @@ import {
   KeyRound,
   Mail,
   Lock,
-  UserCheck,
   ShieldAlert,
   ArrowRight,
   Sprout,

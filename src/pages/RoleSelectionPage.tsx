@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDemoUser } from '../hooks/useDemoUser';
 import { useLanguage } from '../context/LanguageContext';
-import { UserCheck, ArrowRight, ShieldCheck, MapPin, Phone, Building, RotateCcw, Check } from 'lucide-react';
+import { UserCheck, ArrowRight, MapPin, Phone, Building, RotateCcw } from 'lucide-react';
 import { resetDemoData } from '../data/dataAccess';
 
 export const RoleSelectionPage: React.FC = () => {

@@ -15,13 +15,6 @@ export function formatINR(amount: number): string {
   return `${isNegative ? '-' : ''}₹${formatted}`;
 }
 
-export function formatNumberIN(num: number): string {
-  if (isNaN(num) || num === null || num === undefined) {
-    return '0';
-  }
-  return new Intl.NumberFormat('en-IN').format(num);
-}
-
 export function formatDateIN(dateString: string): string {
   try {
     const d = new Date(dateString);

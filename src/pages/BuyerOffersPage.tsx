@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
 import { useDemoUser } from '../hooks/useDemoUser';
 import { fetchOffersByBuyerAsync, fetchListingByIdAsync } from '../data/dataAccess';
@@ -17,24 +17,16 @@ import {
   ArrowRight,
   Truck,
   Package,
-  Calendar,
   CheckCircle2,
   XCircle,
   AlertCircle,
-  Eye,
-  Info,
-  Building,
-  UserCheck,
-  CreditCard,
   FileText,
-  Filter,
   Loader2,
 } from 'lucide-react';
 
 export const BuyerOffersPage: React.FC = () => {
   const { language, t } = useLanguage();
   const { currentUser, isBuyer, isGuest, switchUser, isRealAuth } = useDemoUser();
-  const navigate = useNavigate();
 
   const [offers, setOffers] = useState<Offer[]>([]);
   const [statusFilter, setStatusFilter] = useState<'all' | OfferStatus>('all');
@@ -454,11 +446,11 @@ export const BuyerOffersPage: React.FC = () => {
                           'buyerOffers.listingSoldNotice',
                           'Deal Finalized: Produce accepted! Contact farmer to finalize pickup and dispatch.'
                         )}{' '}
-                        {listing && (
+                        {listing && listing.farmerPhone && !listing.farmerPhone.startsWith('Protected') ? (
                           <span className="font-bold underline ml-1">
                             {listing.farmerPhone}
                           </span>
-                        )}
+                        ) : null}
                       </div>
                     </div>
                   </div>

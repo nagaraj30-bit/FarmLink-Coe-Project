@@ -14,17 +14,11 @@ import { EditListingModal } from '../components/listings/EditListingModal';
 import {
   Sprout,
   PlusCircle,
-  Inbox,
-  Filter,
-  ArrowRight,
   HelpCircle,
   ChevronRight,
-  Scale,
-  Calendar,
   CheckCircle2,
   Edit3,
   AlertCircle,
-  Check,
   Loader2,
 } from 'lucide-react';
 

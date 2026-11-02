@@ -16,7 +16,6 @@ import {
   Info,
   Truck,
   Package,
-  Building,
   CheckCircle2,
   AlertCircle,
   Loader2,
@@ -26,7 +25,7 @@ export const MakeOfferPage: React.FC = () => {
   const { listingId } = useParams<{ listingId: string }>();
   const navigate = useNavigate();
   const { language, t } = useLanguage();
-  const { currentUser, isBuyer, isRealAuth } = useDemoUser();
+  const { currentUser, isRealAuth } = useDemoUser();
 
   const [listing, setListing] = useState<ProduceListing | null>(null);
   const [isLoadingListing, setIsLoadingListing] = useState<boolean>(true);
@@ -208,6 +207,7 @@ export const MakeOfferPage: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isSubmitting) return;
     setSubmitError(null);
     const newErrors: Record<string, string> = {};
 
@@ -229,17 +229,46 @@ export const MakeOfferPage: React.FC = () => {
     }
 
     if (quantity <= 0) {
-      newErrors.quantity = 'Quantity must be greater than 0.';
+      newErrors.quantity = language === 'ta' ? 'அளவு பூஜ்ஜியத்தை விட அதிகமாக இருக்க வேண்டும்.' : 'Quantity must be greater than 0.';
     } else if (quantity > listing.quantity) {
-      newErrors.quantity = `Quantity cannot exceed available inventory of ${listing.quantity} ${listing.unit}.`;
+      newErrors.quantity = language === 'ta'
+        ? `அளவு கிடைக்கக்கூடிய சரக்கு ${listing.quantity} ${listing.unit} ஐ விட அதிகமாக இருக்க முடியாது.`
+        : `Quantity cannot exceed available inventory of ${listing.quantity} ${listing.unit}.`;
     }
 
     if (offeredPrice <= 0) {
-      newErrors.offeredPrice = 'Offered price must be greater than 0.';
+      newErrors.offeredPrice = language === 'ta'
+        ? 'விலை பூஜ்ஜியத்தை விட அதிகமாக இருக்க வேண்டும்.'
+        : 'Offered price must be greater than 0.';
     }
 
-    if (transportCost < 0) newErrors.transportCost = 'Transport cost cannot be negative.';
-    if (packagingCost < 0) newErrors.packagingCost = 'Packaging cost cannot be negative.';
+    if (!paymentTerms.trim()) {
+      newErrors.paymentTerms = language === 'ta'
+        ? 'கட்டண விதிமுறைகள் தேவை.'
+        : 'Payment terms are required.';
+    }
+
+    if (!pickupLocation.trim()) {
+      newErrors.pickupLocation = language === 'ta'
+        ? 'ஏற்றிச்செல்லும் இடம் தேவை.'
+        : 'Pickup location is required.';
+    }
+
+    if (transportCost < 0) {
+      newErrors.transportCost = language === 'ta'
+        ? 'போக்குவரத்து செலவு எதிர்மறையாக இருக்க முடியாது.'
+        : 'Transport cost cannot be negative.';
+    }
+    if (packagingCost < 0) {
+      newErrors.packagingCost = language === 'ta'
+        ? 'பேக்கேஜிங் செலவு எதிர்மறையாக இருக்க முடியாது.'
+        : 'Packaging cost cannot be negative.';
+    }
+    if (otherCosts < 0) {
+      newErrors.otherCosts = language === 'ta'
+        ? 'இதர செலவுகள் எதிர்மறையாக இருக்க முடியாது.'
+        : 'Other costs cannot be negative.';
+    }
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
@@ -265,12 +294,12 @@ export const MakeOfferPage: React.FC = () => {
           transportCost: Number(transportCost),
           packagingCost: Number(packagingCost),
           otherCosts: Number(otherCosts),
-          paymentTerms,
-          paymentTermsTa: paymentTerms,
-          pickupLocation,
-          pickupLocationTa: pickupLocation,
-          notes,
-          notesTa: notes,
+          paymentTerms: paymentTerms.trim(),
+          paymentTermsTa: paymentTerms.trim(),
+          pickupLocation: pickupLocation.trim(),
+          pickupLocationTa: pickupLocation.trim(),
+          notes: notes.trim(),
+          notesTa: notes.trim(),
         },
         Boolean(isRealAuth)
       );
@@ -534,6 +563,9 @@ export const MakeOfferPage: React.FC = () => {
                 className="w-full px-3 py-2 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-emerald-500"
                 placeholder="e.g. Immediate UPI / Cash on crate loading"
               />
+              {errors.paymentTerms && (
+                <p className="text-xs text-rose-600 mt-1 font-medium">{errors.paymentTerms}</p>
+              )}
             </div>
 
             <div>
@@ -547,6 +579,9 @@ export const MakeOfferPage: React.FC = () => {
                 className="w-full px-3 py-2 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-emerald-500"
                 placeholder="e.g. Farm gate pickup or Market yard gate"
               />
+              {errors.pickupLocation && (
+                <p className="text-xs text-rose-600 mt-1 font-medium">{errors.pickupLocation}</p>
+              )}
             </div>
 
             <div>

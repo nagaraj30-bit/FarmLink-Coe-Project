@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
 import { useDemoUser } from '../hooks/useDemoUser';
-import { fetchListingsAsync, fetchOffersForListingAsync } from '../data/dataAccess';
+import { fetchListingsAsync, fetchOffersForListingAsync, deleteListingAsync } from '../data/dataAccess';
 import { ProduceListing, Offer } from '../types';
 import { formatINR, formatDateIN } from '../utils/formatters';
 import { getSellingUrgency } from '../utils/calculations';
@@ -14,18 +14,17 @@ import {
   Sprout,
   PlusCircle,
   AlertCircle,
-  ArrowRight,
   TrendingUp,
   Inbox,
   Clock,
-  Sparkles,
   HelpCircle,
-  FileSpreadsheet,
   ChevronRight,
   CheckCircle2,
   User,
   Edit3,
+  Trash2,
   Loader2,
+  X,
 } from 'lucide-react';
 
 export const FarmerDashboardPage: React.FC = () => {
@@ -36,9 +35,36 @@ export const FarmerDashboardPage: React.FC = () => {
   const [selectedCropForGuidance, setSelectedCropForGuidance] = useState<ProduceListing | null>(null);
   const [guidanceModalOpen, setGuidanceModalOpen] = useState(false);
   const [editingListing, setEditingListing] = useState<ProduceListing | null>(null);
+  const [deletingListing, setDeletingListing] = useState<ProduceListing | null>(null);
+  const [isDeleting, setIsDeleting] = useState<boolean>(false);
+  const [actionFeedback, setActionFeedback] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
   const [offersMap, setOffersMap] = useState<Record<string, Offer[]>>({});
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+
+  const handleDeleteListing = async (listingId: string) => {
+    if (isDeleting) return;
+    setIsDeleting(true);
+    try {
+      await deleteListingAsync(listingId, Boolean(isRealAuth));
+      setActionFeedback({
+        type: 'success',
+        message:
+          language === 'ta'
+            ? 'விளைபொருள் பட்டியல் வெற்றிகரமாக நீக்கப்பட்டது.'
+            : 'Listing deleted successfully.',
+      });
+      setDeletingListing(null);
+      loadListings();
+    } catch (err: any) {
+      setActionFeedback({
+        type: 'error',
+        message: err?.message || 'Failed to delete listing. Please try again.',
+      });
+    } finally {
+      setIsDeleting(false);
+    }
+  };
 
   const loadListings = () => {
     let isMounted = true;
@@ -129,6 +155,31 @@ export const FarmerDashboardPage: React.FC = () => {
       )}
 
       {/* Top Profile & Welcome Header */}
+      {actionFeedback && (
+        <div
+          className={`p-4 rounded-xl flex items-center justify-between gap-3 text-xs sm:text-sm font-medium border ${
+            actionFeedback.type === 'success'
+              ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
+              : 'bg-rose-50 text-rose-800 border-rose-200'
+          }`}
+        >
+          <div className="flex items-center gap-2">
+            {actionFeedback.type === 'success' ? (
+              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+            ) : (
+              <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
+            )}
+            <span>{actionFeedback.message}</span>
+          </div>
+          <button
+            onClick={() => setActionFeedback(null)}
+            className="text-slate-400 hover:text-slate-600 p-1 rounded-md"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+      )}
+
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-2xs">
         <div className="flex items-center gap-4">
           <div className="w-14 h-14 rounded-2xl bg-emerald-100 flex items-center justify-center text-3xl shadow-inner">
@@ -462,15 +513,26 @@ export const FarmerDashboardPage: React.FC = () => {
 
                       {/* Edit button for active unsold lots owned by current farmer */}
                       {item.status !== 'sold' && (item.farmerId && item.farmerId === currentUser?.id) && (
-                        <button
-                          type="button"
-                          onClick={() => setEditingListing(item)}
-                          className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-xl border border-slate-300 hover:border-emerald-600 hover:text-emerald-700 text-slate-700 text-xs font-bold transition-colors bg-white shadow-2xs"
-                          title={language === 'ta' ? 'விளைபொருள் விவரங்களை திருத்தவும்' : 'Edit Listing Parameters'}
-                        >
-                          <Edit3 className="w-3.5 h-3.5 text-slate-500" />
-                          <span>{language === 'ta' ? 'திருத்து' : 'Edit'}</span>
-                        </button>
+                        <>
+                          <button
+                            type="button"
+                            onClick={() => setEditingListing(item)}
+                            className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-xl border border-slate-300 hover:border-emerald-600 hover:text-emerald-700 text-slate-700 text-xs font-bold transition-colors bg-white shadow-2xs"
+                            title={language === 'ta' ? 'விளைபொருள் விவரங்களை திருத்தவும்' : 'Edit Listing Parameters'}
+                          >
+                            <Edit3 className="w-3.5 h-3.5 text-slate-500" />
+                            <span>{language === 'ta' ? 'திருத்து' : 'Edit'}</span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setDeletingListing(item)}
+                            className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-xl border border-rose-200 hover:border-rose-400 hover:bg-rose-50 text-rose-700 text-xs font-bold transition-colors bg-white shadow-2xs"
+                            title={language === 'ta' ? 'பட்டியலை நீக்கு' : 'Delete Listing'}
+                          >
+                            <Trash2 className="w-3.5 h-3.5 text-rose-500" />
+                            <span>{language === 'ta' ? 'நீக்கு' : 'Delete'}</span>
+                          </button>
+                        </>
                       )}
 
                       <Link
@@ -512,6 +574,46 @@ export const FarmerDashboardPage: React.FC = () => {
           cropName={language === 'ta' ? selectedCropForGuidance.cropNameTa : selectedCropForGuidance.cropName}
           urgencyLevel={getSellingUrgency(selectedCropForGuidance.sellWithinDays).level}
         />
+      )}
+
+      {/* Delete Produce Listing Confirmation Modal */}
+      {deletingListing && (
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200 space-y-4">
+            <div className="w-12 h-12 rounded-2xl bg-rose-100 text-rose-600 flex items-center justify-center">
+              <Trash2 className="w-6 h-6" />
+            </div>
+            <div className="space-y-1">
+              <h3 className="text-base font-bold text-slate-900">
+                {language === 'ta' ? 'விளைபொருள் பட்டியலை நீக்கவா?' : 'Delete Produce Listing?'}
+              </h3>
+              <p className="text-xs text-slate-600 leading-relaxed">
+                {language === 'ta'
+                  ? `"${deletingListing.cropName}" (${deletingListing.quantity} ${deletingListing.unit}) பட்டியலை நிரந்தரமாக நீக்க விரும்புகிறீர்களா? இந்த செயலை மாற்ற முடியாது.`
+                  : `Are you sure you want to permanently delete your listing for "${deletingListing.cropName}" (${deletingListing.quantity} ${deletingListing.unit})? This action cannot be undone.`}
+              </p>
+            </div>
+            <div className="flex items-center justify-end gap-3 pt-2">
+              <button
+                type="button"
+                disabled={isDeleting}
+                onClick={() => setDeletingListing(null)}
+                className="px-4 py-2 rounded-xl border border-slate-200 text-slate-700 text-xs font-bold hover:bg-slate-50 transition-colors"
+              >
+                {language === 'ta' ? 'ரத்துசெய்' : 'Cancel'}
+              </button>
+              <button
+                type="button"
+                disabled={isDeleting}
+                onClick={() => handleDeleteListing(deletingListing.id)}
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold transition-colors shadow-sm"
+              >
+                {isDeleting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
+                <span>{language === 'ta' ? 'நீக்கு' : 'Confirm Delete'}</span>
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

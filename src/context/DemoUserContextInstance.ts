@@ -13,6 +13,7 @@ export interface DemoUserContextType {
   isBuyer: boolean;
   isGuest: boolean;
   isRealAuth?: boolean;
+  isLoading?: boolean;
 }
 
 export const DemoUserContext = createContext<DemoUserContextType | undefined>(undefined);

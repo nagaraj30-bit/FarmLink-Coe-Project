@@ -26,7 +26,7 @@ import {
 
 export const Navbar: React.FC = () => {
   const { language, setLanguage, t } = useLanguage();
-  const { currentUser, isFarmer, isBuyer, isGuest, logout, isRealAuth } = useDemoUser();
+  const { currentUser, isFarmer, isBuyer, isGuest, logout } = useDemoUser();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -54,7 +54,7 @@ export const Navbar: React.FC = () => {
       to: '/farmer',
       label: t('nav.farmerDashboard', 'Farmer Dashboard'),
       icon: <LayoutDashboard className="w-4 h-4" />,
-      visible: true,
+      visible: isFarmer,
     },
     {
       to: '/my-listings',
@@ -80,6 +80,12 @@ export const Navbar: React.FC = () => {
       icon: <PlusCircle className="w-4 h-4" />,
       visible: isFarmer,
     },
+    {
+      to: '/roles',
+      label: language === 'ta' ? 'டெமோ பாத்திரங்கள்' : 'Demo Personas',
+      icon: <UserCheck className="w-4 h-4" />,
+      visible: isGuest,
+    },
   ];
 
   return (
@@ -88,7 +94,7 @@ export const Navbar: React.FC = () => {
       <div className="bg-emerald-950 text-emerald-200 text-xs px-4 py-1.5 flex items-center justify-between font-mono">
         <div className="flex items-center gap-2 truncate">
           <span className="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-          <span className="font-semibold text-white">CoE Phase 1 Evaluation Prototype</span>
+          <span className="font-semibold text-white">FarmLink CoE Evaluation Prototype</span>
           <span className="hidden sm:inline text-emerald-300/80">| Decision-Support for Agricultural Sales</span>
         </div>
         <div className="flex items-center gap-3 shrink-0">
@@ -293,6 +299,15 @@ export const Navbar: React.FC = () => {
             ) : (
               /* Guest state controls */
               <div className="flex items-center gap-2 text-xs">
+                <Link
+                  to="/roles"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-emerald-300 hover:border-emerald-500 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-semibold transition-colors shadow-2xs"
+                  title="Select or switch interactive demo persona"
+                >
+                  <UserCheck className="w-3.5 h-3.5 text-emerald-700" />
+                  <span>{language === 'ta' ? 'டெமோ பாத்திரங்கள்' : 'Demo Personas'}</span>
+                </Link>
+
                 <Link
                   to="/login"
                   className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-300 hover:border-emerald-500 bg-white hover:bg-emerald-50/50 text-slate-700 font-semibold transition-colors shadow-2xs"

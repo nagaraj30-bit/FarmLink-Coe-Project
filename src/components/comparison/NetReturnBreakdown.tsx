@@ -3,7 +3,7 @@ import { NetReturnCalculation } from '../../types';
 import { formatINR } from '../../utils/formatters';
 import { useLanguage } from '../../context/LanguageContext';
 import { DisclaimerNotice } from '../common/DisclaimerNotice';
-import { Calculator, ArrowRight, TrendingUp, Minus } from 'lucide-react';
+import { Calculator, TrendingUp, Minus } from 'lucide-react';
 
 interface NetReturnBreakdownProps {
   calculation: NetReturnCalculation;

@@ -132,5 +132,6 @@ To enable live backend authentication and cloud storage:
 
 ---
 
-## 📑 Review 2 / CoE Submission Documentation
-For comprehensive architectural specifications, security threat models, field validation results with 3 regional stakeholders, and verification matrices, refer to [REVIEW_2_DOCUMENTATION.md](./REVIEW_2_DOCUMENTATION.md).
+## 📑 Master Project Audit & CoE Documentation
+- **Master Project Audit & Final Specification**: See [docs/FARMLINK_MASTER_PROJECT_AUDIT.md](./docs/FARMLINK_MASTER_PROJECT_AUDIT.md) for the single authoritative final master audit covering all features, user flows, testing, limitations, and verification results.
+- **Review 2 Documentation & Stakeholder Feedback**: See [REVIEW_2_DOCUMENTATION.md](./REVIEW_2_DOCUMENTATION.md) for field validation insights with 3 regional stakeholders.

@@ -19,15 +19,11 @@ import {
   ArrowLeft,
   Award,
   CheckCircle2,
-  TrendingUp,
   AlertCircle,
   AlertTriangle,
   HelpCircle,
-  Clock,
   MapPin,
-  Building,
   Scale,
-  Sparkles,
   Info,
   Check,
   X,
@@ -40,7 +36,7 @@ export const FarmerOffersComparisonPage: React.FC = () => {
   const { listingId } = useParams<{ listingId: string }>();
   const navigate = useNavigate();
   const { language, t } = useLanguage();
-  const { currentUser, isFarmer, isRealAuth } = useDemoUser();
+  const { currentUser, isRealAuth } = useDemoUser();
 
   const [listing, setListing] = useState<ProduceListing | null>(null);
   const [offers, setOffers] = useState<Offer[]>([]);
@@ -206,10 +202,10 @@ export const FarmerOffersComparisonPage: React.FC = () => {
   }
 
   const urgency = getSellingUrgency(listing.sellWithinDays);
-  const bestOffer = rankedOffers.find((r) => r.isBestReturn);
   const acceptedOffer = offers.find((o) => o.status === 'accepted');
 
   const handleConfirmAccept = async (offerId: string) => {
+    if (isProcessingAction) return;
     if (!isOwner) {
       setErrorMessage(t('offer.declineErrorOwner', 'Only the farmer who listed this produce can accept or decline offers.'));
       setAcceptingOfferId(null);
@@ -247,6 +243,7 @@ export const FarmerOffersComparisonPage: React.FC = () => {
   };
 
   const handleConfirmDecline = async (offerId: string) => {
+    if (isProcessingAction) return;
     if (!isOwner) {
       setErrorMessage(t('offer.declineErrorOwner', 'Only the farmer who listed this produce can accept or decline offers.'));
       setDecliningOffer(null);

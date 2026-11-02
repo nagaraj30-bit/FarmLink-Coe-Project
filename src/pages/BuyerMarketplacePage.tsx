@@ -11,7 +11,6 @@ import { DisclaimerNotice } from '../components/common/DisclaimerNotice';
 import { EmptyState } from '../components/common/EmptyState';
 import {
   Store,
-  Filter,
   MapPin,
   Eye,
   Send,

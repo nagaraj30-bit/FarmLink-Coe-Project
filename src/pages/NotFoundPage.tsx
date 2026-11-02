@@ -4,19 +4,17 @@ import { useLanguage } from '../context/LanguageContext';
 import { useDemoUser } from '../hooks/useDemoUser';
 import { DisclaimerNotice } from '../components/common/DisclaimerNotice';
 import {
-  Sprout,
   Compass,
   ArrowLeft,
   Home,
   ShoppingBag,
   LayoutDashboard,
   LogIn,
-  Search,
 } from 'lucide-react';
 
 export const NotFoundPage: React.FC = () => {
   const { language, t } = useLanguage();
-  const { currentUser, isFarmer, isBuyer, isGuest } = useDemoUser();
+  const { isFarmer, isBuyer } = useDemoUser();
   const navigate = useNavigate();
 
   return (

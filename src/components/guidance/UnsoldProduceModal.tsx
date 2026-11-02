@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLanguage } from '../../context/LanguageContext';
+import { useDemoUser } from '../../hooks/useDemoUser';
+import { fetchUnsoldGuidanceAsync } from '../../data/dataAccess';
 import { UNSOLD_GUIDANCE_OPTIONS } from '../../data/mockData';
 import { UnsoldGuidance, UrgencyLevel } from '../../types';
 import { ShieldAlert, Warehouse, SunMedium, ShoppingBag, Users, X, ChevronRight, PhoneCall, CheckCircle } from 'lucide-react';
@@ -18,11 +20,38 @@ export const UnsoldProduceModal: React.FC<UnsoldProduceModalProps> = ({
   urgencyLevel = 'high',
 }) => {
   const { language, t } = useLanguage();
+  const { isRealAuth } = useDemoUser();
+  const [options, setOptions] = useState<UnsoldGuidance[]>(UNSOLD_GUIDANCE_OPTIONS);
   const [selectedId, setSelectedId] = useState<string>(UNSOLD_GUIDANCE_OPTIONS[0].id);
+
+  useEffect(() => {
+    let isMounted = true;
+    if (isOpen && isRealAuth) {
+      fetchUnsoldGuidanceAsync(Boolean(isRealAuth))
+        .then((data) => {
+          if (!isMounted) return;
+          if (data && data.length > 0) {
+            setOptions(data);
+            setSelectedId((prev) => {
+              const stillExists = data.some((opt) => opt.id === prev);
+              return stillExists ? prev : data[0].id;
+            });
+          }
+        })
+        .catch((err) => {
+          console.warn('Could not load unsold guidance from remote database, using offline fallback:', err);
+        });
+    } else if (isOpen && !isRealAuth) {
+      setOptions(UNSOLD_GUIDANCE_OPTIONS);
+    }
+    return () => {
+      isMounted = false;
+    };
+  }, [isOpen, isRealAuth]);
 
   if (!isOpen) return null;
 
-  const selectedOption = UNSOLD_GUIDANCE_OPTIONS.find((o) => o.id === selectedId) || UNSOLD_GUIDANCE_OPTIONS[0];
+  const selectedOption = options.find((o) => o.id === selectedId) || options[0] || UNSOLD_GUIDANCE_OPTIONS[0];
 
   const getCategoryIcon = (cat: string) => {
     switch (cat) {
@@ -89,7 +118,7 @@ export const UnsoldProduceModal: React.FC<UnsoldProduceModalProps> = ({
             <div className="text-[11px] font-bold uppercase tracking-wider text-slate-500 px-2 py-1">
               {language === 'ta' ? 'தேர்வு செய்யக்கூடிய வழிகள்' : 'Available Avenues'}
             </div>
-            {UNSOLD_GUIDANCE_OPTIONS.map((opt) => {
+            {options.map((opt) => {
               const isSelected = opt.id === selectedId;
               return (
                 <button

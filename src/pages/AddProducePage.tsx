@@ -7,7 +7,7 @@ import { ProduceUnit, ProduceListing } from '../types';
 import { getSellingUrgency } from '../utils/calculations';
 import { UrgencyBadge } from '../components/common/Badge';
 import { DisclaimerNotice } from '../components/common/DisclaimerNotice';
-import { Sprout, ArrowLeft, Save, AlertCircle, Info, Calculator, Calendar, Loader2 } from 'lucide-react';
+import { Sprout, ArrowLeft, Save, AlertCircle, Calendar, Loader2 } from 'lucide-react';
 
 export const AddProducePage: React.FC = () => {
   const { language, t } = useLanguage();
@@ -39,6 +39,7 @@ export const AddProducePage: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isSubmitting) return;
     setSubmitError(null);
     const newErrors: Record<string, string> = {};
 
@@ -63,8 +64,16 @@ export const AddProducePage: React.FC = () => {
     if (expectedPrice <= 0) {
       newErrors.expectedPrice = language === 'ta' ? 'எதிர்பார்க்கும் விலை பூஜ்ஜியத்தை விட அதிகமாக இருக்க வேண்டும்.' : 'Expected price must be greater than 0.';
     }
-    if (sellWithinDays < 0) {
-      newErrors.sellWithinDays = language === 'ta' ? 'விற்பனை காலக்கெடு எதிர்மறையாக இருக்க முடியாது.' : 'Selling deadline cannot be negative.';
+    if (minFloorPrice < 0) {
+      newErrors.minFloorPrice = language === 'ta' ? 'குறைந்தபட்ச விலை எதிர்மறையாக இருக்க முடியாது.' : 'Minimum floor price cannot be negative.';
+    } else if (expectedPrice > 0 && minFloorPrice > expectedPrice) {
+      newErrors.minFloorPrice = language === 'ta' ? 'குறைந்தபட்ச விலை எதிர்பார்க்கும் இலக்கு விலையை விட அதிகமாக இருக்க முடியாது.' : 'Minimum floor price cannot exceed target expected price.';
+    }
+    if (sellWithinDays < 0 || sellWithinDays > 90) {
+      newErrors.sellWithinDays = language === 'ta' ? 'விற்பனை காலக்கெடு 0 முதல் 90 நாட்களுக்குள் இருக்க வேண்டும்.' : 'Selling deadline must be between 0 and 90 days.';
+    }
+    if (!district.trim()) {
+      newErrors.district = language === 'ta' ? 'மாவட்டம் தேர்ந்தெடுக்கப்பட வேண்டும்.' : 'District is required.';
     }
 
     if (Object.keys(newErrors).length > 0) {
@@ -82,10 +91,10 @@ export const AddProducePage: React.FC = () => {
           farmerName: currentUser.name,
           farmerNameTa: currentUser.nameTa,
           farmerPhone: currentUser.phone,
-          cropName,
-          cropNameTa: cropName,
-          variety,
-          varietyTa: variety,
+          cropName: cropName.trim(),
+          cropNameTa: cropName.trim(),
+          variety: variety.trim(),
+          varietyTa: variety.trim(),
           category,
           quantity: Number(quantity),
           unit,
@@ -93,15 +102,15 @@ export const AddProducePage: React.FC = () => {
           minAcceptablePricePerUnit: Number(minFloorPrice),
           harvestingDate,
           sellWithinDays: Number(sellWithinDays),
-          storageCondition,
-          storageConditionTa: storageCondition,
-          district,
-          districtTa: district,
+          storageCondition: storageCondition.trim(),
+          storageConditionTa: storageCondition.trim(),
+          district: district.trim(),
+          districtTa: district.trim(),
           transportEstimate: Number(transportEstimate),
           packagingEstimate: Number(packagingEstimate),
           status: 'active',
-          description,
-          descriptionTa: description,
+          description: description.trim(),
+          descriptionTa: description.trim(),
         },
         Boolean(isRealAuth)
       );
@@ -293,6 +302,7 @@ export const AddProducePage: React.FC = () => {
                 onChange={(e) => setDistrict(e.target.value)}
                 className="w-full px-3 py-2 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-white"
               />
+              {errors.district && <p className="text-xs text-rose-600 mt-1 font-medium">{errors.district}</p>}
             </div>
           </div>
 
@@ -319,12 +329,13 @@ export const AddProducePage: React.FC = () => {
               </label>
               <input
                 type="number"
-                min="1"
+                min="0"
                 step="any"
                 value={minFloorPrice}
                 onChange={(e) => setMinFloorPrice(Number(e.target.value))}
                 className="w-full px-3 py-2 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-emerald-500"
               />
+              {errors.minFloorPrice && <p className="text-xs text-rose-600 mt-1 font-medium">{errors.minFloorPrice}</p>}
               <p className="text-[11px] text-slate-400 mt-1">
                 {language === 'ta' ? 'இதற்குக் கீழ் வரும் வாய்ப்புகளுக்கு மாற்று வழிகள் காட்டப்படும்.' : 'Used for unsold produce advisory triggers.'}
               </p>

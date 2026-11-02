@@ -1,5 +1,5 @@
 import { supabase, isSupabaseConfigured, getSupabaseClient } from '../lib/supabase';
-import { ProduceListing, Offer, UserProfile, ListingStatus } from '../types';
+import { ProduceListing, Offer, UserProfile, ListingStatus, UnsoldGuidance } from '../types';
 
 /**
  * Maps database public.profiles row to frontend UserProfile
@@ -248,6 +248,17 @@ export async function updateListingRemote(
   return mapListingRow(data);
 }
 
+export async function deleteListingRemote(id: string): Promise<boolean> {
+  const client = getSupabaseClient();
+  const { error } = await client
+    .from('produce_listings')
+    .delete()
+    .eq('id', id);
+
+  if (error) throw error;
+  return true;
+}
+
 // ====================================================================================
 // OFFERS API
 // ====================================================================================
@@ -337,4 +348,39 @@ export async function acceptOfferRemote(offerId: string): Promise<{
   const { data, error } = await client.rpc('accept_offer', { p_offer_id: offerId });
   if (error) throw error;
   return data;
+}
+
+// ====================================================================================
+// UNSOLD GUIDANCE API
+// ====================================================================================
+
+/**
+ * Maps database public.unsold_guidance row to frontend UnsoldGuidance
+ */
+export function mapGuidanceRow(row: any): UnsoldGuidance {
+  return {
+    id: row.id,
+    title: row.title,
+    titleTa: row.title_ta || row.title,
+    category: row.category,
+    urgencySuitability: row.urgency_suitability || [],
+    description: row.description,
+    descriptionTa: row.description_ta || row.description,
+    actionSteps: row.action_steps || [],
+    actionStepsTa: row.action_steps_ta || row.action_steps || [],
+    contactSupport: row.contact_support,
+    contactSupportTa: row.contact_support_ta || row.contact_support,
+    estimatedRecoveryPct: row.estimated_recovery_pct,
+  };
+}
+
+export async function fetchUnsoldGuidanceRemote(): Promise<UnsoldGuidance[]> {
+  if (!isSupabaseConfigured || !supabase) return [];
+  const { data, error } = await supabase
+    .from('unsold_guidance')
+    .select('*')
+    .order('id', { ascending: true });
+
+  if (error) throw error;
+  return (data || []).map(mapGuidanceRow);
 }

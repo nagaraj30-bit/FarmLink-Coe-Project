@@ -13,7 +13,6 @@ import {
   ArrowLeft,
   Building,
   Sprout,
-  Users,
   Eye,
   Info,
   RotateCcw,

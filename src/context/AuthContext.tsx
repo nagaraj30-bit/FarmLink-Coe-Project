@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import { User, Session } from '@supabase/supabase-js';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
 import { UserProfile, UserRole } from '../types';
-import { fetchProfileRemote, mapProfileRow } from '../data/supabaseDataAccess';
+import { fetchProfileRemote } from '../data/supabaseDataAccess';
 
 export interface SignUpMetadata {
   role: UserRole;
@@ -32,6 +32,27 @@ export interface AuthContextType {
   refreshProfile: () => Promise<void>;
 }
 
+export function buildProfileFromUser(u: User): UserProfile {
+  const meta = u.user_metadata || {};
+  const role: UserRole = meta.role === 'buyer' ? 'buyer' : 'farmer';
+  return {
+    id: u.id,
+    role,
+    name: meta.name || u.email?.split('@')[0] || 'User',
+    nameTa: meta.name_ta || meta.name || u.email?.split('@')[0] || 'பயனர்',
+    phone: meta.phone || '',
+    district: meta.district || '',
+    districtTa: meta.district_ta || meta.district || '',
+    location: meta.location || '',
+    locationTa: meta.location_ta || meta.location || '',
+    avatar: meta.avatar || (role === 'farmer' ? '👨‍🌾' : '🏢'),
+    fpoMember: Boolean(meta.fpo_member),
+    fpoName: meta.fpo_name || undefined,
+    businessType: meta.business_type || undefined,
+    businessTypeTa: meta.business_type_ta || undefined,
+  };
+}
+
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
@@ -40,13 +61,17 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  const loadProfile = async (userId: string) => {
+  const loadProfile = async (currentUser: User) => {
     try {
-      const p = await fetchProfileRemote(userId);
-      setProfile(p);
+      const p = await fetchProfileRemote(currentUser.id);
+      if (p) {
+        setProfile(p);
+      } else {
+        setProfile(buildProfileFromUser(currentUser));
+      }
     } catch (err) {
-      console.warn('Could not load remote profile:', err);
-      setProfile(null);
+      console.warn('Could not load remote profile, using session metadata fallback:', err);
+      setProfile(buildProfileFromUser(currentUser));
     }
   };
 
@@ -59,9 +84,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     // Initial session retrieval
     supabase.auth.getSession().then(({ data: { session: initialSession } }) => {
       setSession(initialSession);
-      setUser(initialSession?.user ?? null);
-      if (initialSession?.user) {
-        loadProfile(initialSession.user.id).finally(() => setIsLoading(false));
+      const currentUser = initialSession?.user ?? null;
+      setUser(currentUser);
+      if (currentUser) {
+        loadProfile(currentUser).finally(() => setIsLoading(false));
       } else {
         setIsLoading(false);
       }
@@ -70,9 +96,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     // Listen to real-time auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, currentSession) => {
       setSession(currentSession);
-      setUser(currentSession?.user ?? null);
-      if (currentSession?.user) {
-        await loadProfile(currentSession.user.id);
+      const currentUser = currentSession?.user ?? null;
+      setUser(currentUser);
+      if (currentUser) {
+        await loadProfile(currentUser);
       } else {
         setProfile(null);
       }
@@ -115,7 +142,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       if (error) return { error, user: null };
       if (data.user) {
         // Allow trigger to populate and fetch
-        setTimeout(() => loadProfile(data.user!.id), 500);
+        setTimeout(() => loadProfile(data.user!), 500);
       }
       return { error: null, user: data.user };
     } catch (err: any) {
@@ -136,7 +163,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
       if (error) return { error };
       if (data.user) {
-        await loadProfile(data.user.id);
+        await loadProfile(data.user);
       }
       return { error: null };
     } catch (err: any) {
@@ -155,7 +182,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const refreshProfile = async () => {
     if (user) {
-      await loadProfile(user.id);
+      await loadProfile(user);
     }
   };
 
@@ -166,7 +193,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         profile,
         session,
         isLoading,
-        isRealAuth: Boolean(user && profile),
+        isRealAuth: Boolean(user),
         signUp,
         signIn,
         signOut,

@@ -84,7 +84,7 @@ CREATE TABLE IF NOT EXISTS public.produce_listings (
   quantity NUMERIC(12, 2) NOT NULL CHECK (quantity > 0),
   unit public.produce_unit NOT NULL,
   expected_price_per_unit NUMERIC(12, 2) NOT NULL CHECK (expected_price_per_unit > 0),
-  min_acceptable_price_per_unit NUMERIC(12, 2) NOT NULL DEFAULT 0 
+  min_acceptable_price_per_unit NUMERIC(12, 2) NOT NULL DEFAULT 0
     CHECK (min_acceptable_price_per_unit >= 0 AND min_acceptable_price_per_unit <= expected_price_per_unit),
   harvesting_date DATE NOT NULL,
   listed_date DATE NOT NULL DEFAULT CURRENT_DATE,
@@ -154,61 +154,61 @@ CREATE TABLE IF NOT EXISTS public.unsold_guidance (
 
 -- Seed static reference options if empty
 INSERT INTO public.unsold_guidance (id, title, title_ta, category, urgency_suitability, description, description_ta, action_steps, action_steps_ta, contact_support, contact_support_ta, estimated_recovery_pct)
-VALUES 
+VALUES
 (
-  'guidance-1', 
-  'Short-Term Cold Storage & Regulated Warehousing', 
-  'குளிர்சாதன கிடங்கு மற்றும் ஒழுங்குமுறை சேமிப்பு', 
-  'storage', 
-  ARRAY['high', 'medium'], 
-  'Store produce in nearest state-subsidized cold storage for 3–7 days until market supply eases.', 
-  'விலை மிகவும் குறைவாக இருந்தால், தமிழ்நாடு அரசு குளிர்சாதன கிடங்கில் 3 முதல் 7 நாட்கள் சேமித்து வைக்கலாம்.', 
-  ARRAY['Locate nearest TN Agri Marketing Board Cold Storage.', 'Average rent: ₹1.20 - ₹1.80 per kg per week.', 'Obtain warehouse receipt (e-NWR) for credit.'], 
-  ARRAY['அருகிலுள்ள அரசு குளிர்சாதன கிடங்கை அணுகவும்.', 'வாரம் ஒரு கிலோவுக்கு ₹1.20 - ₹1.80 வாடகை.', 'கிடங்கு ரசீது மூலம் கடன் பெறலாம்.'], 
-  'TN Agri Marketing Department Helpline: 1800-425-3535', 
-  'வேளாண் வணிகத்துறை உதவி எண்: 1800-425-3535', 
+  'guidance-1',
+  'Short-Term Cold Storage & Regulated Warehousing',
+  'குளிர்சாதன கிடங்கு மற்றும் ஒழுங்குமுறை சேமிப்பு',
+  'storage',
+  ARRAY['high', 'medium'],
+  'Store produce in nearest state-subsidized cold storage for 3–7 days until market supply eases.',
+  'விலை மிகவும் குறைவாக இருந்தால், தமிழ்நாடு அரசு குளிர்சாதன கிடங்கில் 3 முதல் 7 நாட்கள் சேமித்து வைக்கலாம்.',
+  ARRAY['Locate nearest TN Agri Marketing Board Cold Storage.', 'Average rent: ₹1.20 - ₹1.80 per kg per week.', 'Obtain warehouse receipt (e-NWR) for credit.'],
+  ARRAY['அருகிலுள்ள அரசு குளிர்சாதன கிடங்கை அணுகவும்.', 'வாரம் ஒரு கிலோவுக்கு ₹1.20 - ₹1.80 வாடகை.', 'கிடங்கு ரசீது மூலம் கடன் பெறலாம்.'],
+  'TN Agri Marketing Department Helpline: 1800-425-3535',
+  'வேளாண் வணிகத்துறை உதவி எண்: 1800-425-3535',
   '85% – 95% of target market value'
 ),
 (
-  'guidance-2', 
-  'Secondary Processing & Value Addition (Puree, Solar Drying, Pickle)', 
-  'மதிப்புக் கூட்டுதல் மற்றும் பதப்படுத்துதல்', 
-  'processing', 
-  ARRAY['high', 'medium', 'normal'], 
-  'Transform perishable surplus into durable value-added products through local cottage units.', 
-  'காய்கறி மற்றும் பழங்களை கூழ், சாஸ் அல்லது உலர்த்தி மதிப்புக்கூட்டி அதிக லாபம் பெறலாம்.', 
-  ARRAY['Tie up with local puree or solar dehydration units.', 'Fruit pulp extraction via KVK pilot units.', 'Converts unsold stock into 6-month shelf-life goods.'], 
-  ARRAY['உள்ளூர் கூழ் தயாரிப்பாளர்கள் அல்லது சோலார் உலர் கூடங்களை தொடர்பு கொள்ளவும்.', 'KVK பயிற்சி மையங்கள் மூலம் கூழ் தயாரிப்பு.', '6 மாத கால மதிப்புள்ள தயாரிப்பாக மாற்றும்.'], 
-  'TNAU Post-Harvest Technology Center, Coimbatore', 
-  'தமிழ்நாடு வேளாண்மை பல்கலைக்கழக அறுவடை பின்செய் மையம்', 
+  'guidance-2',
+  'Secondary Processing & Value Addition (Puree, Solar Drying, Pickle)',
+  'மதிப்புக் கூட்டுதல் மற்றும் பதப்படுத்துதல்',
+  'processing',
+  ARRAY['high', 'medium', 'normal'],
+  'Transform perishable surplus into durable value-added products through local cottage units.',
+  'காய்கறி மற்றும் பழங்களை கூழ், சாஸ் அல்லது உலர்த்தி மதிப்புக்கூட்டி அதிக லாபம் பெறலாம்.',
+  ARRAY['Tie up with local puree or solar dehydration units.', 'Fruit pulp extraction via KVK pilot units.', 'Converts unsold stock into 6-month shelf-life goods.'],
+  ARRAY['உள்ளூர் கூழ் தயாரிப்பாளர்கள் அல்லது சோலார் உலர் கூடங்களை தொடர்பு கொள்ளவும்.', 'KVK பயிற்சி மையங்கள் மூலம் கூழ் தயாரிப்பு.', '6 மாத கால மதிப்புள்ள தயாரிப்பாக மாற்றும்.'],
+  'TNAU Post-Harvest Technology Center, Coimbatore',
+  'தமிழ்நாடு வேளாண்மை பல்கலைக்கழக அறுவடை பின்செய் மையம்',
   '70% – 120% of distress fresh sale'
 ),
 (
-  'guidance-3', 
-  'Direct Haat & Uzhavar Sandhai (Farmers Market) Clearance', 
-  'உழவர் சந்தை நேரடி விற்பனை', 
-  'direct_sale', 
-  ARRAY['high'], 
-  'Bypass intermediary deductions completely by selling directly to consumers next morning.', 
-  'இடைத்தரகர்கள் இன்றி, உழவர் சந்தையில் நேரடியாக நுகர்வோருக்கு விற்கலாம்.', 
-  ARRAY['Carry Farmer ID card to nearest Uzhavar Sandhai before 5:30 AM.', 'Zero stall fee and state electronic scales.', 'Direct consumer cash realization with full margins.'], 
-  ARRAY['விவசாயி அடையாள அட்டையுடன் அதிகாலை 5:30 மணிக்குள் செல்லவும்.', 'இலவச கடை மற்றும் எடைத்தராசு வசதி.', 'நுகர்வோருக்கு நேரடியாக விற்று முழு லாபம் பெறலாம்.'], 
-  'District Uzhavar Sandhai Administrative Officer', 
-  'மாவட்ட உழவர் சந்தை நிர்வாக அலுவலர்', 
+  'guidance-3',
+  'Direct Haat & Uzhavar Sandhai (Farmers Market) Clearance',
+  'உழவர் சந்தை நேரடி விற்பனை',
+  'direct_sale',
+  ARRAY['high'],
+  'Bypass intermediary deductions completely by selling directly to consumers next morning.',
+  'இடைத்தரகர்கள் இன்றி, உழவர் சந்தையில் நேரடியாக நுகர்வோருக்கு விற்கலாம்.',
+  ARRAY['Carry Farmer ID card to nearest Uzhavar Sandhai before 5:30 AM.', 'Zero stall fee and state electronic scales.', 'Direct consumer cash realization with full margins.'],
+  ARRAY['விவசாயி அடையாள அட்டையுடன் அதிகாலை 5:30 மணிக்குள் செல்லவும்.', 'இலவச கடை மற்றும் எடைத்தராசு வசதி.', 'நுகர்வோருக்கு நேரடியாக விற்று முழு லாபம் பெறலாம்.'],
+  'District Uzhavar Sandhai Administrative Officer',
+  'மாவட்ட உழவர் சந்தை நிர்வாக அலுவலர்',
   '90% – 105% of fair market value'
 ),
 (
-  'guidance-4', 
-  'Farmer Producer Organization (FPO) Bulk Aggregation', 
-  'உழவர் உற்பத்தியாளர் நிறுவனம் (FPO) மூலமாக மொத்த விற்பனை', 
-  'fpo', 
-  ARRAY['medium', 'normal'], 
-  'Pool unsold produce with neighboring farmers to form multi-ton institutional lots.', 
-  'தனி நபராக விற்காமல், உழவர் உற்பத்தியாளர் குழுவுடன் இணைந்து மொத்தமாக விற்கலாம்.', 
-  ARRAY['Inform local FPO procurement coordinator.', 'Combines smaller lots into 5-ton truckloads, cutting freight by up to 60%.', 'Collective bargaining eliminates panic distress sales.'], 
-  ARRAY['FPO ஒருங்கிணைப்பாளரிடம் இருப்பு விவரத்தை தெரிவிக்கவும்.', 'பொருட்களை ஒன்று சேர்த்து அனுப்புவதால் லாரி வாடகை 60% குறையும்.', 'குழுவாக விற்பதால் நியாயமான விலை கிடைக்கும்.'], 
-  'Tamil Nadu Small Farmers Agri-Business Consortium (TNSFAC)', 
-  'தமிழ்நாடு சிறு விவசாயிகள் வேளாண் வணிக கூட்டமைப்பு', 
+  'guidance-4',
+  'Farmer Producer Organization (FPO) Bulk Aggregation',
+  'உழவர் உற்பத்தியாளர் நிறுவனம் (FPO) மூலமாக மொத்த விற்பனை',
+  'fpo',
+  ARRAY['medium', 'normal'],
+  'Pool unsold produce with neighboring farmers to form multi-ton institutional lots.',
+  'தனி நபராக விற்காமல், உழவர் உற்பத்தியாளர் குழுவுடன் இணைந்து மொத்தமாக விற்கலாம்.',
+  ARRAY['Inform local FPO procurement coordinator.', 'Combines smaller lots into 5-ton truckloads, cutting freight by up to 60%.', 'Collective bargaining eliminates panic distress sales.'],
+  ARRAY['FPO ஒருங்கிணைப்பாளரிடம் இருப்பு விவரத்தை தெரிவிக்கவும்.', 'பொருட்களை ஒன்று சேர்த்து அனுப்புவதால் லாரி வாடகை 60% குறையும்.', 'குழுவாக விற்பதால் நியாயமான விலை கிடைக்கும்.'],
+  'Tamil Nadu Small Farmers Agri-Business Consortium (TNSFAC)',
+  'தமிழ்நாடு சிறு விவசாயிகள் வேளாண் வணிக கூட்டமைப்பு',
   '80% – 90% of wholesale benchmark'
 )
 ON CONFLICT (id) DO NOTHING;
@@ -239,9 +239,8 @@ CREATE INDEX IF NOT EXISTS idx_offers_listing_status ON public.offers(listing_id
 -- A. ROLE TAMPERING PREVENTION TRIGGER
 -- ------------------------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION public.protect_profile_immutability()
-RETURNS TRIGGER 
+RETURNS TRIGGER
 LANGUAGE plpgsql
-SECURITY DEFINER
 SET search_path = public, pg_temp
 AS $$
 BEGIN
@@ -269,7 +268,7 @@ FOR EACH ROW EXECUTE FUNCTION public.protect_profile_immutability();
 -- B. OFFER SUBMISSION VALIDATION TRIGGER
 -- ------------------------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION public.validate_offer_submission()
-RETURNS TRIGGER 
+RETURNS TRIGGER
 LANGUAGE plpgsql
 SECURITY DEFINER
 SET search_path = public, pg_temp
@@ -317,6 +316,8 @@ BEGIN
 END;
 $$;
 
+ALTER FUNCTION public.validate_offer_submission() OWNER TO postgres;
+
 DROP TRIGGER IF EXISTS trg_validate_offer_submission ON public.offers;
 CREATE TRIGGER trg_validate_offer_submission
 BEFORE INSERT ON public.offers
@@ -326,7 +327,7 @@ FOR EACH ROW EXECUTE FUNCTION public.validate_offer_submission();
 -- C. AUTO-SET LISTING STATUS TO 'negotiating' TRIGGER
 -- ------------------------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION public.auto_transition_listing_to_negotiating()
-RETURNS TRIGGER 
+RETURNS TRIGGER
 LANGUAGE plpgsql
 SECURITY DEFINER
 SET search_path = public, pg_temp
@@ -339,6 +340,8 @@ BEGIN
 END;
 $$;
 
+ALTER FUNCTION public.auto_transition_listing_to_negotiating() OWNER TO postgres;
+
 DROP TRIGGER IF EXISTS trg_auto_transition_listing_to_negotiating ON public.offers;
 CREATE TRIGGER trg_auto_transition_listing_to_negotiating
 AFTER INSERT ON public.offers
@@ -348,14 +351,21 @@ FOR EACH ROW EXECUTE FUNCTION public.auto_transition_listing_to_negotiating();
 -- D. STATUS TRANSITION GUARD TRIGGER
 -- ------------------------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION public.enforce_listing_status_transitions()
-RETURNS TRIGGER 
+RETURNS TRIGGER
 LANGUAGE plpgsql
-SECURITY DEFINER
 SET search_path = public, pg_temp
 AS $$
 BEGIN
+  -- Direct transition to 'sold' is prohibited outside of accept_offer() RPC
+  IF NEW.status = 'sold' AND (
+    current_user IS DISTINCT FROM 'postgres'
+    OR current_setting('farmlink.accepting_offer', true) IS DISTINCT FROM 'true'
+  ) THEN
+    RAISE EXCEPTION 'Direct transition to sold is prohibited. Sales must be finalized through accept_offer().';
+  END IF;
+
   -- Terminal status 'sold' cannot be reverted or altered
-  IF OLD.status = 'sold' AND NEW.status != 'sold' THEN
+  IF OLD.status = 'sold' AND NEW.status IS DISTINCT FROM 'sold' THEN
     RAISE EXCEPTION 'Sold produce listings are terminal and cannot be reopened.';
   END IF;
   NEW.updated_at = timezone('utc'::text, now());
@@ -369,39 +379,115 @@ BEFORE UPDATE OF status ON public.produce_listings
 FOR EACH ROW EXECUTE FUNCTION public.enforce_listing_status_transitions();
 
 -- ------------------------------------------------------------------------------------
+-- D2. OFFER IMMUTABILITY GUARD TRIGGER
+-- ------------------------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION public.enforce_offer_immutability()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SET search_path = public, pg_temp
+AS $$
+BEGIN
+  -- Prevent modifying core bid parameters (buyer, listing, price, quantity, costs, terms)
+  -- Uses NULL-safe IS DISTINCT FROM comparison across all immutable fields
+  IF NEW.id IS DISTINCT FROM OLD.id
+     OR NEW.listing_id IS DISTINCT FROM OLD.listing_id
+     OR NEW.buyer_id IS DISTINCT FROM OLD.buyer_id
+     OR NEW.buyer_name IS DISTINCT FROM OLD.buyer_name
+     OR NEW.buyer_name_ta IS DISTINCT FROM OLD.buyer_name_ta
+     OR NEW.buyer_type IS DISTINCT FROM OLD.buyer_type
+     OR NEW.buyer_type_ta IS DISTINCT FROM OLD.buyer_type_ta
+     OR NEW.buyer_phone IS DISTINCT FROM OLD.buyer_phone
+     OR NEW.quantity IS DISTINCT FROM OLD.quantity
+     OR NEW.unit IS DISTINCT FROM OLD.unit
+     OR NEW.offered_price_per_unit IS DISTINCT FROM OLD.offered_price_per_unit
+     OR NEW.transport_cost IS DISTINCT FROM OLD.transport_cost
+     OR NEW.packaging_cost IS DISTINCT FROM OLD.packaging_cost
+     OR NEW.other_costs IS DISTINCT FROM OLD.other_costs
+     OR NEW.payment_terms IS DISTINCT FROM OLD.payment_terms
+     OR NEW.payment_terms_ta IS DISTINCT FROM OLD.payment_terms_ta
+     OR NEW.pickup_location IS DISTINCT FROM OLD.pickup_location
+     OR NEW.pickup_location_ta IS DISTINCT FROM OLD.pickup_location_ta
+     OR NEW.notes IS DISTINCT FROM OLD.notes
+     OR NEW.notes_ta IS DISTINCT FROM OLD.notes_ta
+     OR NEW.created_at IS DISTINCT FROM OLD.created_at THEN
+    RAISE EXCEPTION 'Offer parameters (buyer, price, quantity, terms) are strictly immutable.';
+  END IF;
+
+  -- Terminal statuses ('accepted', 'declined') cannot be modified
+  IF OLD.status IN ('accepted', 'declined') AND NEW.status IS DISTINCT FROM OLD.status THEN
+    RAISE EXCEPTION 'Finalized offers cannot change status.';
+  END IF;
+
+  -- Transition to 'accepted' is restricted exclusively to accept_offer()
+  IF NEW.status = 'accepted' AND (
+    current_user IS DISTINCT FROM 'postgres'
+    OR current_setting('farmlink.accepting_offer', true) IS DISTINCT FROM 'true'
+  ) THEN
+    RAISE EXCEPTION 'Offers cannot be directly updated to accepted. Use accept_offer().';
+  END IF;
+
+  NEW.updated_at = timezone('utc'::text, now());
+  RETURN NEW;
+END;
+$$;
+
+DROP TRIGGER IF EXISTS trg_enforce_offer_immutability ON public.offers;
+CREATE TRIGGER trg_enforce_offer_immutability
+BEFORE UPDATE ON public.offers
+FOR EACH ROW EXECUTE FUNCTION public.enforce_offer_immutability();
+
+-- ------------------------------------------------------------------------------------
 -- E. LISTING ACCESS & OWNERSHIP HELPER FUNCTIONS (SECURITY DEFINER)
 -- ------------------------------------------------------------------------------------
 -- Check whether a buyer has placed an active offer on a listing (for phone unmasking)
 CREATE OR REPLACE FUNCTION public.has_user_offered_on_listing(p_listing_id UUID, p_user_id UUID)
 RETURNS BOOLEAN
-LANGUAGE sql
+LANGUAGE plpgsql
 SECURITY DEFINER
 STABLE
 SET search_path = public, pg_temp
 AS $$
-  SELECT EXISTS (
-    SELECT 1 FROM public.offers 
-    WHERE listing_id = p_listing_id AND buyer_id = p_user_id
+BEGIN
+  -- Strict caller binding: Callers may ONLY check their own offer relationship (auth.uid()).
+  -- Any probe of another user's ID or an unauthenticated call immediately returns false.
+  IF auth.uid() IS NULL OR p_user_id IS DISTINCT FROM auth.uid() THEN
+    RETURN FALSE;
+  END IF;
+
+  RETURN EXISTS (
+    SELECT 1 FROM public.offers
+    WHERE listing_id = p_listing_id AND buyer_id = auth.uid()
   );
+END;
 $$;
 
+ALTER FUNCTION public.has_user_offered_on_listing(UUID, UUID) OWNER TO postgres;
 REVOKE ALL ON FUNCTION public.has_user_offered_on_listing(UUID, UUID) FROM PUBLIC;
 GRANT EXECUTE ON FUNCTION public.has_user_offered_on_listing(UUID, UUID) TO authenticated;
 
 -- Check whether a user is the owner of a listing without triggering RLS recursion
 CREATE OR REPLACE FUNCTION public.is_listing_owner(p_listing_id UUID, p_user_id UUID)
 RETURNS BOOLEAN
-LANGUAGE sql
+LANGUAGE plpgsql
 SECURITY DEFINER
 STABLE
 SET search_path = public, pg_temp
 AS $$
-  SELECT EXISTS (
-    SELECT 1 FROM public.produce_listings 
-    WHERE id = p_listing_id AND farmer_id = p_user_id
+BEGIN
+  -- Strict caller binding: Callers may ONLY verify their own listing ownership.
+  -- Cross-user ownership enumeration immediately returns false.
+  IF auth.uid() IS NULL OR p_user_id IS DISTINCT FROM auth.uid() THEN
+    RETURN FALSE;
+  END IF;
+
+  RETURN EXISTS (
+    SELECT 1 FROM public.produce_listings
+    WHERE id = p_listing_id AND farmer_id = auth.uid()
   );
+END;
 $$;
 
+ALTER FUNCTION public.is_listing_owner(UUID, UUID) OWNER TO postgres;
 REVOKE ALL ON FUNCTION public.is_listing_owner(UUID, UUID) FROM PUBLIC;
 GRANT EXECUTE ON FUNCTION public.is_listing_owner(UUID, UUID) TO authenticated;
 
@@ -409,7 +495,7 @@ GRANT EXECUTE ON FUNCTION public.is_listing_owner(UUID, UUID) TO authenticated;
 -- F. AUTH USER CREATION TRIGGER (HANDLE_NEW_USER)
 -- ------------------------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION public.handle_new_user()
-RETURNS TRIGGER 
+RETURNS TRIGGER
 LANGUAGE plpgsql
 SECURITY DEFINER
 SET search_path = public, pg_temp
@@ -506,6 +592,8 @@ BEGIN
 END;
 $$;
 
+ALTER FUNCTION public.handle_new_user() OWNER TO postgres;
+
 DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
 CREATE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users
@@ -545,8 +633,8 @@ BEGIN
     RAISE EXCEPTION 'Parent produce listing % does not exist.', v_parent_listing_id;
   END IF;
 
-  -- Validate farmer ownership
-  IF v_listing.farmer_id != auth.uid() THEN
+  -- Validate caller authentication and farmer ownership (explicit NULL-safe check)
+  IF auth.uid() IS NULL OR v_listing.farmer_id IS DISTINCT FROM auth.uid() THEN
     RAISE EXCEPTION 'Unauthorized: Only the listing farmer can accept offers.';
   END IF;
 
@@ -580,6 +668,9 @@ BEGIN
   END IF;
 
   -- Step 3: ATOMIC MUTATIONS
+  -- Set transaction-local context flag to authorize listing sale and offer acceptance transitions
+  PERFORM set_config('farmlink.accepting_offer', 'true', true);
+
   -- A. Mark chosen offer as accepted
   UPDATE public.offers
   SET status = 'accepted', updated_at = timezone('utc'::text, now())
@@ -588,8 +679,8 @@ BEGIN
   -- B. Decline all other competing pending offers on this listing
   UPDATE public.offers
   SET status = 'declined', updated_at = timezone('utc'::text, now())
-  WHERE listing_id = v_listing.id 
-    AND id != p_offer_id 
+  WHERE listing_id = v_listing.id
+    AND id != p_offer_id
     AND status = 'pending';
 
   -- C. Mark parent listing as sold
@@ -607,6 +698,9 @@ BEGIN
   );
 END;
 $$;
+
+-- Explicitly establish postgres as owner so SECURITY DEFINER executes with superuser/owner context
+ALTER FUNCTION public.accept_offer(UUID) OWNER TO postgres;
 
 -- Grant least-privilege execution rights to authenticated users only
 REVOKE ALL ON FUNCTION public.accept_offer(UUID) FROM PUBLIC;
@@ -628,7 +722,7 @@ SELECT
     -- 1. The listing owner themselves, OR
     -- 2. An authenticated buyer who has submitted an offer on this listing
     WHEN auth.uid() IS NOT NULL AND (
-      auth.uid() = l.farmer_id 
+      auth.uid() = l.farmer_id
       OR public.has_user_offered_on_listing(l.id, auth.uid())
     ) THEN l.farmer_phone
     ELSE 'Protected (Sign in & submit offer to view)'
@@ -641,7 +735,11 @@ SELECT
   l.quantity,
   l.unit,
   l.expected_price_per_unit,
-  l.min_acceptable_price_per_unit,
+  CASE
+    -- Confidential floor price: exposed strictly to the listing owner
+    WHEN auth.uid() IS NOT NULL AND auth.uid() = l.farmer_id THEN l.min_acceptable_price_per_unit
+    ELSE NULL
+  END AS min_acceptable_price_per_unit,
   l.harvesting_date,
   l.listed_date,
   l.sell_within_days,
@@ -674,19 +772,24 @@ ALTER TABLE public.offers ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.unsold_guidance ENABLE ROW LEVEL SECURITY;
 
 -- ------------------------------------------------------------------------------------
--- A. PROFILES RLS
+-- A. PROFILES RLS & PRIVILEGES (OWN-PROFILE ACCESS ONLY)
 -- ------------------------------------------------------------------------------------
+-- Revoke all access from PUBLIC and anon, enforcing least-privilege for authenticated
+REVOKE ALL ON public.profiles FROM PUBLIC;
+REVOKE ALL ON public.profiles FROM anon;
+REVOKE INSERT, DELETE ON public.profiles FROM authenticated;
+GRANT SELECT, UPDATE ON public.profiles TO authenticated;
+
 DROP POLICY IF EXISTS "Profiles are readable by authenticated users" ON public.profiles;
-CREATE POLICY "Profiles are readable by authenticated users"
+DROP POLICY IF EXISTS "Users can view own profile" ON public.profiles;
+CREATE POLICY "Users can view own profile"
 ON public.profiles FOR SELECT
 TO authenticated
-USING (true);
+USING (auth.uid() = id);
 
+-- Direct client INSERT is revoked.
+-- Profile creation is handled exclusively server-side by the handle_new_user() SECURITY DEFINER trigger on auth.users.
 DROP POLICY IF EXISTS "Users can insert own profile" ON public.profiles;
-CREATE POLICY "Users can insert own profile"
-ON public.profiles FOR INSERT
-TO authenticated
-WITH CHECK (auth.uid() = id);
 
 DROP POLICY IF EXISTS "Users can update own profile" ON public.profiles;
 CREATE POLICY "Users can update own profile"
@@ -698,7 +801,8 @@ WITH CHECK (auth.uid() = id);
 -- ------------------------------------------------------------------------------------
 -- B. PRODUCE LISTINGS RLS & DIRECT TABLE PRIVILEGES
 -- ------------------------------------------------------------------------------------
--- Revoke direct base table access from anon so public clients cannot bypass masked view
+-- Revoke direct base table access from PUBLIC and anon so public clients cannot bypass masked view
+REVOKE ALL ON public.produce_listings FROM PUBLIC;
 REVOKE ALL ON public.produce_listings FROM anon;
 
 -- Grant CRUD to authenticated users
@@ -711,7 +815,7 @@ CREATE POLICY "Base produce listings readable by owner or offer participant"
 ON public.produce_listings FOR SELECT
 TO authenticated
 USING (
-  auth.uid() = farmer_id 
+  auth.uid() = farmer_id
   OR public.has_user_offered_on_listing(id, auth.uid())
 );
 
@@ -720,7 +824,8 @@ CREATE POLICY "Farmers can create listings"
 ON public.produce_listings FOR INSERT
 TO authenticated
 WITH CHECK (
-  auth.uid() = farmer_id 
+  auth.uid() = farmer_id
+  AND status = 'active'
   AND EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'farmer')
 );
 
@@ -729,23 +834,41 @@ CREATE POLICY "Farmers can update own unsold listings"
 ON public.produce_listings FOR UPDATE
 TO authenticated
 USING (
-  auth.uid() = farmer_id 
+  auth.uid() = farmer_id
   AND status != 'sold'
 )
 WITH CHECK (
   auth.uid() = farmer_id
+  AND status != 'sold'
+);
+
+DROP POLICY IF EXISTS "Farmers can delete own unsold listings" ON public.produce_listings;
+CREATE POLICY "Farmers can delete own unsold listings"
+ON public.produce_listings FOR DELETE
+TO authenticated
+USING (
+  auth.uid() = farmer_id
+  AND status != 'sold'
 );
 
 -- ------------------------------------------------------------------------------------
 -- C. OFFERS RLS (STRICT BID PRIVACY)
 -- ------------------------------------------------------------------------------------
+-- Revoke direct access from PUBLIC and anon, enforcing least-privilege for authenticated
+REVOKE ALL ON public.offers FROM PUBLIC;
+REVOKE ALL ON public.offers FROM anon;
+REVOKE UPDATE ON public.offers FROM authenticated;
+GRANT SELECT, INSERT, DELETE ON public.offers TO authenticated;
+-- Restrict direct UPDATE privilege exclusively to status and updated_at columns
+GRANT UPDATE (status, updated_at) ON public.offers TO authenticated;
+
 DROP POLICY IF EXISTS "Offers visible only to submitting buyer and listing farmer" ON public.offers;
 CREATE POLICY "Offers visible only to submitting buyer and listing farmer"
 ON public.offers FOR SELECT
 TO authenticated
 USING (
-  auth.uid() = buyer_id 
-  OR 
+  auth.uid() = buyer_id
+  OR
   public.is_listing_owner(offers.listing_id, auth.uid())
 );
 
@@ -767,12 +890,26 @@ USING (
   AND status = 'pending'
 )
 WITH CHECK (
-  status = 'declined'
+  public.is_listing_owner(offers.listing_id, auth.uid())
+  AND status = 'declined'
+);
+
+DROP POLICY IF EXISTS "Buyers can withdraw own pending offers" ON public.offers;
+CREATE POLICY "Buyers can withdraw own pending offers"
+ON public.offers FOR DELETE
+TO authenticated
+USING (
+  auth.uid() = buyer_id
+  AND status = 'pending'
 );
 
 -- ------------------------------------------------------------------------------------
 -- D. UNSOLD GUIDANCE RLS
 -- ------------------------------------------------------------------------------------
+-- Revoke all access from PUBLIC and explicitly grant read-only access to anon and authenticated
+REVOKE ALL ON public.unsold_guidance FROM PUBLIC;
+GRANT SELECT ON public.unsold_guidance TO anon, authenticated;
+
 DROP POLICY IF EXISTS "Unsold guidance readable by all" ON public.unsold_guidance;
 CREATE POLICY "Unsold guidance readable by all"
 ON public.unsold_guidance FOR SELECT
@@ -792,18 +929,18 @@ COMMIT;
 ---------------------------------------------------------------------------------------
 -- VERIFICATION CHECK 1: Confirm RLS is enabled on all FarmLink tables
 ---------------------------------------------------------------------------------------
-SELECT schemaname, tablename, rowsecurity 
-FROM pg_tables 
-WHERE schemaname = 'public' 
+SELECT schemaname, tablename, rowsecurity
+FROM pg_tables
+WHERE schemaname = 'public'
   AND tablename IN ('profiles', 'produce_listings', 'offers', 'unsold_guidance');
 -- Expected: rowsecurity = true for all 4 tables.
 
 ---------------------------------------------------------------------------------------
 -- VERIFICATION CHECK 2: Confirm View Security Invoker is FALSE (Runs as Definer)
 ---------------------------------------------------------------------------------------
-SELECT relname, reloptions 
-FROM pg_class 
-WHERE relnamespace = 'public'::regnamespace 
+SELECT relname, reloptions
+FROM pg_class
+WHERE relnamespace = 'public'::regnamespace
   AND relname = 'produce_listings_public';
 -- Expected: reloptions is NULL or contains 'security_invoker=false'.
 
@@ -812,7 +949,7 @@ WHERE relnamespace = 'public'::regnamespace
 ---------------------------------------------------------------------------------------
 SELECT grantee, table_name, privilege_type
 FROM information_schema.table_privileges
-WHERE table_schema = 'public' 
+WHERE table_schema = 'public'
   AND table_name IN ('produce_listings', 'produce_listings_public', 'offers', 'profiles')
 ORDER BY table_name, grantee, privilege_type;
 -- Expected:
@@ -821,23 +958,30 @@ ORDER BY table_name, grantee, privilege_type;
 -- - offers has NO privileges for anon.
 
 ---------------------------------------------------------------------------------------
--- VERIFICATION CHECK 4: Confirm Functions have SECURITY DEFINER and Search Path
+-- VERIFICATION CHECK 4: Confirm Function Security Modes and Search Paths
 ---------------------------------------------------------------------------------------
 SELECT proname, prosecdef, proconfig
 FROM pg_proc
 JOIN pg_namespace ON pg_proc.pronamespace = pg_namespace.oid
 WHERE nspname = 'public'
   AND proname IN (
-    'accept_offer', 
-    'handle_new_user', 
-    'protect_profile_immutability', 
-    'validate_offer_submission', 
-    'auto_transition_listing_to_negotiating', 
-    'enforce_listing_status_transitions',
+    'accept_offer',
+    'handle_new_user',
+    'validate_offer_submission',
+    'auto_transition_listing_to_negotiating',
     'has_user_offered_on_listing',
-    'is_listing_owner'
-  );
--- Expected: prosecdef = true and proconfig = {'search_path=public, pg_temp'} for all.
+    'is_listing_owner',
+    'protect_profile_immutability',
+    'enforce_listing_status_transitions',
+    'enforce_offer_immutability'
+  )
+ORDER BY prosecdef DESC, proname;
+-- Expected:
+-- 1. SECURITY DEFINER (prosecdef = true): accept_offer, auto_transition_listing_to_negotiating,
+--    handle_new_user, has_user_offered_on_listing, is_listing_owner, validate_offer_submission.
+-- 2. SECURITY INVOKER (prosecdef = false): enforce_listing_status_transitions,
+--    enforce_offer_immutability, protect_profile_immutability (run in caller context).
+-- 3. All functions must enforce proconfig = {'search_path=public, pg_temp'}.
 
 ---------------------------------------------------------------------------------------
 -- VERIFICATION PROCEDURE 1: Phone Masking Test (Anonymous & Non-Offering Buyers)
@@ -883,8 +1027,8 @@ WHERE nspname = 'public'
 ---------------------------------------------------------------------------------------
 -- SCOPED ROLLBACK SCRIPT (DESTRUCTIVE TO FARMLINK OBJECTS ONLY)
 ---------------------------------------------------------------------------------------
--- WARNING: Running the statements below will permanently drop all FarmLink Phase 2 
--- database tables, views, triggers, functions, and types. Unrelated objects in the 
+-- WARNING: Running the statements below will permanently drop all FarmLink Phase 2
+-- database tables, views, triggers, functions, and types. Unrelated objects in the
 -- database will NOT be affected.
 --
 -- BEGIN;
@@ -903,6 +1047,7 @@ WHERE nspname = 'public'
 --
 --   -- Drop Functions
 --   DROP FUNCTION IF EXISTS public.accept_offer(UUID);
+--   DROP FUNCTION IF EXISTS public.enforce_offer_immutability();
 --   DROP FUNCTION IF EXISTS public.enforce_listing_status_transitions();
 --   DROP FUNCTION IF EXISTS public.auto_transition_listing_to_negotiating();
 --   DROP FUNCTION IF EXISTS public.validate_offer_submission();

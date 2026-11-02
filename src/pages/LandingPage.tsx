@@ -9,16 +9,10 @@ import {
   Sprout,
   ArrowRight,
   Calculator,
-  ShieldCheck,
   Clock,
-  TrendingUp,
   Scale,
   Award,
-  ChevronRight,
   Layers,
-  HelpCircle,
-  Truck,
-  Package,
 } from 'lucide-react';
 
 export const LandingPage: React.FC = () => {
@@ -29,14 +23,14 @@ export const LandingPage: React.FC = () => {
   const [demoQty, setDemoQty] = useState(100);
 
   // Buyer A: Lower unit price, low costs
-  const [buyerAPrice, setBuyerAPrice] = useState(20);
-  const [buyerATransport, setBuyerATransport] = useState(300);
-  const [buyerAPackaging, setBuyerAPackaging] = useState(100);
+  const buyerAPrice = 20;
+  const buyerATransport = 300;
+  const buyerAPackaging = 100;
 
   // Buyer B: Higher unit price, high costs
-  const [buyerBPrice, setBuyerBPrice] = useState(19);
-  const [buyerBTransport, setBuyerBTransport] = useState(100);
-  const [buyerBPackaging, setBuyerBPackaging] = useState(50);
+  const buyerBPrice = 19;
+  const buyerBTransport = 100;
+  const buyerBPackaging = 50;
 
   const calcA = calculateNetReturn(demoQty, buyerAPrice, buyerATransport, buyerAPackaging, 0, 'kg');
   const calcB = calculateNetReturn(demoQty, buyerBPrice, buyerBTransport, buyerBPackaging, 0, 'kg');

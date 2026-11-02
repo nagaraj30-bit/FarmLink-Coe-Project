@@ -11,11 +11,9 @@ import {
   X,
   AlertCircle,
   Check,
-  TrendingUp,
   Clock,
   Info,
   Scale,
-  Sparkles,
 } from 'lucide-react';
 
 interface EditListingModalProps {
@@ -57,6 +55,7 @@ export const EditListingModal: React.FC<EditListingModalProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (isSubmitting) return;
     const newErrors: Record<string, string> = {};
 
     if (!currentUser || currentUser.role !== 'farmer' || currentUser.id !== listing.farmerId) {

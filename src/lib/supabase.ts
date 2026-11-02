@@ -1,10 +1,17 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
-// Read URL and Publishable/Anon key from Vite environment
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL?.trim();
+// Read URL and Publishable/Anon key safely from Vite or process environment
+const env: Record<string, any> =
+  typeof import.meta !== 'undefined' && import.meta.env
+    ? import.meta.env
+    : typeof process !== 'undefined' && process.env
+    ? process.env
+    : {};
+
+const supabaseUrl = env.VITE_SUPABASE_URL?.trim();
 const supabaseKey = (
-  import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY ||
-  import.meta.env.VITE_SUPABASE_ANON_KEY
+  env.VITE_SUPABASE_PUBLISHABLE_KEY ||
+  env.VITE_SUPABASE_ANON_KEY
 )?.trim();
 
 export interface SupabaseConfigStatus {

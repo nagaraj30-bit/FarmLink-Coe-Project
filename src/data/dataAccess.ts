@@ -1,5 +1,5 @@
-import { ProduceListing, Offer, UserProfile, OfferStatus, ListingStatus } from '../types';
-import { SEED_PROFILES, SEED_LISTINGS, SEED_OFFERS } from './mockData';
+import { ProduceListing, Offer, UserProfile, OfferStatus, ListingStatus, UnsoldGuidance } from '../types';
+import { SEED_PROFILES, SEED_LISTINGS, SEED_OFFERS, UNSOLD_GUIDANCE_OPTIONS } from './mockData';
 
 const STORAGE_KEYS = {
   PROFILES: 'farmlink_profiles_v1',
@@ -46,7 +46,7 @@ export function resetDemoData(): void {
   writeStorage(STORAGE_KEYS.PROFILES, SEED_PROFILES);
   writeStorage(STORAGE_KEYS.LISTINGS, SEED_LISTINGS);
   writeStorage(STORAGE_KEYS.OFFERS, SEED_OFFERS);
-  localStorage.setItem(STORAGE_KEYS.ACTIVE_USER_ID, 'farmer-1');
+  localStorage.setItem(STORAGE_KEYS.ACTIVE_USER_ID, 'guest');
 }
 
 // Profile queries
@@ -63,8 +63,8 @@ export function getProfileById(id: string): UserProfile | undefined {
 export function getActiveUserId(): string | null {
   initializeStorage();
   const activeId = localStorage.getItem(STORAGE_KEYS.ACTIVE_USER_ID);
-  if (activeId === 'guest') return null;
-  return activeId || 'farmer-1';
+  if (!activeId || activeId === 'guest') return null;
+  return activeId;
 }
 
 export function setActiveUserId(id: string | null): void {
@@ -149,7 +149,7 @@ export function createListing(
   const current = readStorage<ProduceListing[]>(STORAGE_KEYS.LISTINGS, SEED_LISTINGS);
   const newListing: ProduceListing = {
     ...data,
-    id: `list-${Date.now()}`,
+    id: `list-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
     listedDate: new Date().toISOString().split('T')[0],
   };
 
@@ -177,6 +177,15 @@ export function updateListingStatus(id: string, status: ListingStatus): boolean 
   return !!updated;
 }
 
+export function deleteListing(id: string): boolean {
+  initializeStorage();
+  const current = readStorage<ProduceListing[]>(STORAGE_KEYS.LISTINGS, SEED_LISTINGS);
+  const filtered = current.filter((l) => l.id !== id);
+  if (filtered.length === current.length) return false;
+  writeStorage(STORAGE_KEYS.LISTINGS, filtered);
+  return true;
+}
+
 // Offer operations
 export function getOffers(): Offer[] {
   initializeStorage();
@@ -200,7 +209,7 @@ export function createOffer(
   const current = getOffers();
   const newOffer: Offer = {
     ...data,
-    id: `offer-${Date.now()}`,
+    id: `offer-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
     status: 'pending',
     createdAt: new Date().toISOString(),
   };
@@ -243,6 +252,18 @@ export function acceptOffer(
 
   const targetOffer = allOffers[targetOfferIndex];
   const listingId = targetOffer.listingId;
+
+  // Validate listing exists and is not already sold or expired
+  const allListings = getListings();
+  const targetListing = allListings.find((l) => l.id === listingId);
+  if (!targetListing || targetListing.status === 'sold' || targetListing.status === 'expired') {
+    return undefined;
+  }
+
+  // Validate offer is currently pending
+  if (targetOffer.status !== 'pending') {
+    return undefined;
+  }
 
   // Accept target offer
   targetOffer.status = 'accepted';
@@ -343,6 +364,22 @@ export async function updateListingAsync(
     return await remote.updateListingRemote(id, updates);
   }
   return updateListing(id, updates);
+}
+
+/**
+ * Delete a produce listing (unsold lot owned by current farmer).
+ */
+export async function deleteListingAsync(
+  id: string,
+  isRealAuth: boolean = false
+): Promise<boolean> {
+  if (isRealAuth && !id.startsWith('list-')) {
+    if (!isSupabaseConfigured) {
+      throw new Error('Supabase client is not configured.');
+    }
+    return await remote.deleteListingRemote(id);
+  }
+  return deleteListing(id);
 }
 
 /**
@@ -459,5 +496,25 @@ export async function acceptOfferAsync(
     throw new Error('Offer acceptance RPC succeeded, but could not re-fetch updated listing.');
   }
   return acceptOffer(offerId);
+}
+
+/**
+ * Fetch unsold guidance advisory options.
+ * Queries Supabase `unsold_guidance` table when real auth is active,
+ * or retrieves static guidance options in demo mode or as offline fallback.
+ */
+export async function fetchUnsoldGuidanceAsync(
+  isRealAuth: boolean = false
+): Promise<UnsoldGuidance[]> {
+  if (isRealAuth) {
+    if (!isSupabaseConfigured) {
+      throw new Error('Supabase client is not configured.');
+    }
+    const remoteData = await remote.fetchUnsoldGuidanceRemote();
+    if (remoteData && remoteData.length > 0) {
+      return remoteData;
+    }
+  }
+  return UNSOLD_GUIDANCE_OPTIONS;
 }
 

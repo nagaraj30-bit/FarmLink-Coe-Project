@@ -11,6 +11,7 @@ import {
   Sprout,
   ShoppingBag,
   LayoutDashboard,
+  Loader2,
 } from 'lucide-react';
 
 interface RouteGuardProps {
@@ -20,8 +21,20 @@ interface RouteGuardProps {
 
 export const RouteGuard: React.FC<RouteGuardProps> = ({ requiredRole, children }) => {
   const { language, t } = useLanguage();
-  const { currentUser, isGuest, switchUser } = useDemoUser();
+  const { currentUser, isGuest, isLoading, switchUser } = useDemoUser();
   const navigate = useNavigate();
+
+  // 0. Session verification in-flight: show spinner, do not flash guest or reject prematurely
+  if (isLoading) {
+    return (
+      <div className="max-w-md mx-auto px-4 py-32 text-center space-y-4">
+        <Loader2 className="w-10 h-10 text-emerald-600 animate-spin mx-auto" />
+        <p className="text-xs font-semibold text-slate-500">
+          {language === 'ta' ? 'அங்கீகாரம் சரிபார்க்கப்படுகிறது...' : 'Verifying authorized session...'}
+        </p>
+      </div>
+    );
+  }
 
   // 1. Guest checking: guests must sign in or choose a demo persona
   if (isGuest || !currentUser) {

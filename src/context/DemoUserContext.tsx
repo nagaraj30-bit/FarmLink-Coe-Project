@@ -16,7 +16,7 @@ export type { DemoUserContextType };
 export { DemoUserContext };
 
 export const DemoUserProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { user: authUser, profile: authProfile, isRealAuth, signOut: authSignOut, refreshProfile: authRefreshProfile } = useAuth();
+  const { user: authUser, profile: authProfile, isRealAuth, isLoading: authLoading, signOut: authSignOut, refreshProfile: authRefreshProfile } = useAuth();
 
   const [profiles, setProfiles] = useState<UserProfile[]>(() => getProfiles());
   const [activeId, setActiveId] = useState<string | null>(() => getActiveUserId());
@@ -25,8 +25,17 @@ export const DemoUserProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     setProfiles(getProfiles());
   }, []);
 
-  // When real Supabase user is logged in, their profile is the current user
-  const currentUser: UserProfile | null = isRealAuth && authProfile
+  // Clear demo activeId whenever real authenticated user session is active
+  useEffect(() => {
+    if (authUser && activeId) {
+      setActiveId(null);
+      clearActiveUserId();
+    }
+  }, [authUser, activeId]);
+
+  // When real Supabase user is logged in, their verified database profile is the ONLY authorized identity.
+  // Real authenticated users never receive demo personas, and user_metadata is NEVER trusted for role authorization!
+  const currentUser: UserProfile | null = authUser
     ? authProfile
     : activeId
     ? (profiles.find((p) => p.id === activeId) || null)
@@ -84,7 +93,7 @@ export const DemoUserProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
   const isFarmer = currentUser?.role === 'farmer';
   const isBuyer = currentUser?.role === 'buyer';
-  const isGuest = currentUser === null;
+  const isGuest = !authUser && currentUser === null;
 
   return (
     <DemoUserContext.Provider
@@ -100,6 +109,7 @@ export const DemoUserProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         isBuyer,
         isGuest,
         isRealAuth,
+        isLoading: authLoading,
       }}
     >
       {children}
